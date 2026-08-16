@@ -109,9 +109,9 @@ func TestFloat32RejectOutOfRange(t *testing.T) {
 	}
 }
 
-func TestMustFloat32UseDefaultOnOutOfRange(t *testing.T) {
-	if actual := stdx.MustFloat32(math.MaxFloat32*2, 9); actual != 9 {
-		t.Fatalf("MustFloat32 溢出时应返回默认值 9, 实际获得 %f", actual)
+func TestEnsureFloat32UseDefaultOnOutOfRange(t *testing.T) {
+	if actual := stdx.EnsureFloat32(math.MaxFloat32*2, 9); actual != 9 {
+		t.Fatalf("EnsureFloat32 溢出时应返回默认值 9, 实际获得 %f", actual)
 	}
 }
 
@@ -495,12 +495,12 @@ func TestUnsignedIntegerConversionsTruncateFloatBeforeRangeCheck(t *testing.T) {
 	}
 }
 
-func TestMustIntegerConversionsUseDefaultOnOutOfRange(t *testing.T) {
-	if actual := stdx.MustUint(-1, 10); actual != 10 {
-		t.Fatalf("MustUint 溢出时应返回默认值 10, 实际获得 %d", actual)
+func TestEnsureIntegerConversionsUseDefaultOnOutOfRange(t *testing.T) {
+	if actual := stdx.EnsureUint(-1, 10); actual != 10 {
+		t.Fatalf("EnsureUint 溢出时应返回默认值 10, 实际获得 %d", actual)
 	}
-	if actual := stdx.MustInt8(128, 9); actual != 9 {
-		t.Fatalf("MustInt8 溢出时应返回默认值 9, 实际获得 %d", actual)
+	if actual := stdx.EnsureInt8(128, 9); actual != 9 {
+		t.Fatalf("EnsureInt8 溢出时应返回默认值 9, 实际获得 %d", actual)
 	}
 }
 
