@@ -1,4 +1,4 @@
-package stdx_test
+package stdkit_test
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/smartwalle/stdx"
+	"github.com/smartwalle/stdkit"
 )
 
 type stringerValue struct {
@@ -38,7 +38,7 @@ func TestBool(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Bool(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Bool(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 bool, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
@@ -58,7 +58,7 @@ func TestFloat64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Float64(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Float64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 float64, 期望获得 %f, 实际获得  %f", tt.v, tt.r, actual)
 		}
 	}
@@ -81,7 +81,7 @@ func TestFloat32(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, err := stdx.Float32(tt.v); err != nil || actual != tt.r {
+		if actual, err := stdkit.Float32(tt.v); err != nil || actual != tt.r {
 			t.Errorf("把 %v 转换为 float32, 期望获得 %f nil, 实际获得 %f %v", tt.v, tt.r, actual, err)
 		}
 	}
@@ -102,7 +102,7 @@ func TestFloat32RejectOutOfRange(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if _, err := stdx.Float32(tt.v); err == nil {
+			if _, err := stdkit.Float32(tt.v); err == nil {
 				t.Fatalf("期望获得错误, 实际获得 nil")
 			}
 		})
@@ -110,7 +110,7 @@ func TestFloat32RejectOutOfRange(t *testing.T) {
 }
 
 func TestEnsureFloat32UseDefaultOnOutOfRange(t *testing.T) {
-	if actual := stdx.EnsureFloat32(math.MaxFloat32*2, 9); actual != 9 {
+	if actual := stdkit.EnsureFloat32(math.MaxFloat32*2, 9); actual != 9 {
 		t.Fatalf("EnsureFloat32 溢出时应返回默认值 9, 实际获得 %f", actual)
 	}
 }
@@ -120,9 +120,9 @@ func FuzzFloat32RejectFiniteOutOfRange(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, value float64) {
-		var actual, err = stdx.Float32(value)
+		var actual, err = stdkit.Float32(value)
 		if !math.IsNaN(value) && !math.IsInf(value, 0) && (value > math.MaxFloat32 || value < -math.MaxFloat32) {
-			if !errors.Is(err, stdx.ErrOutOfRange) {
+			if !errors.Is(err, stdkit.ErrOutOfRange) {
 				t.Fatalf("Float32(%f) 期望获得 ErrOutOfRange, 实际获得 %v", value, err)
 			}
 			return
@@ -148,7 +148,7 @@ var benchmarkFloat32Result float32
 func BenchmarkFloat32(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		var actual, err = stdx.Float32(benchmarkFloat32Value)
+		var actual, err = stdkit.Float32(benchmarkFloat32Value)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -176,7 +176,7 @@ func TestInt(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Int(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Int(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -202,7 +202,7 @@ func TestInt64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Int64(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Int64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -224,7 +224,7 @@ func TestUint(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Uint(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Uint(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -247,7 +247,7 @@ func TestUint8(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Uint8(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Uint8(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint8, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -270,7 +270,7 @@ func TestUint16(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Uint16(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Uint16(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint16, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -293,7 +293,7 @@ func TestUint32(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Uint32(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Uint32(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -316,7 +316,7 @@ func TestUint64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.Uint64(tt.v); actual != tt.r {
+		if actual, _ := stdkit.Uint64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 Uint64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -328,23 +328,23 @@ func TestIntegerConversionsRejectDecimalStrings(t *testing.T) {
 		err  func() error
 	}{
 		{"Int decimal string", func() error {
-			_, err := stdx.Int("999.999")
+			_, err := stdkit.Int("999.999")
 			return err
 		}},
 		{"Int malformed decimal string", func() error {
-			_, err := stdx.Int("1.2.3")
+			_, err := stdkit.Int("1.2.3")
 			return err
 		}},
 		{"Int trailing decimal string", func() error {
-			_, err := stdx.Int("123.")
+			_, err := stdkit.Int("123.")
 			return err
 		}},
 		{"Uint decimal string", func() error {
-			_, err := stdx.Uint("999.1")
+			_, err := stdkit.Uint("999.1")
 			return err
 		}},
 		{"Uint8 decimal string", func() error {
-			_, err := stdx.Uint8("9.999")
+			_, err := stdkit.Uint8("9.999")
 			return err
 		}},
 	}
@@ -364,74 +364,74 @@ func TestIntegerConversionsRejectOutOfRange(t *testing.T) {
 		err  func() error
 	}{
 		{"Int from uint overflow", func() error {
-			_, err := stdx.Int(uint64(math.MaxInt) + 1)
+			_, err := stdkit.Int(uint64(math.MaxInt) + 1)
 			return err
 		}},
 		{"Int8 overflow", func() error {
-			_, err := stdx.Int8(128)
+			_, err := stdkit.Int8(128)
 			return err
 		}},
 		{"Int8 underflow", func() error {
-			_, err := stdx.Int8(-129)
+			_, err := stdkit.Int8(-129)
 			return err
 		}},
 		{"Int8 from uint overflow", func() error {
-			_, err := stdx.Int8(uint(128))
+			_, err := stdkit.Int8(uint(128))
 			return err
 		}},
 		{"Int8 from float overflow", func() error {
-			_, err := stdx.Int8(128.0)
+			_, err := stdkit.Int8(128.0)
 			return err
 		}},
 		{"Int64 from uint64 overflow", func() error {
-			_, err := stdx.Int64(uint64(math.MaxInt64) + 1)
+			_, err := stdkit.Int64(uint64(math.MaxInt64) + 1)
 			return err
 		}},
 		{"Int64 from positive infinity", func() error {
-			_, err := stdx.Int64(math.Inf(1))
+			_, err := stdkit.Int64(math.Inf(1))
 			return err
 		}},
 		{"Int64 from NaN", func() error {
-			_, err := stdx.Int64(math.NaN())
+			_, err := stdkit.Int64(math.NaN())
 			return err
 		}},
 		{"Uint from negative int", func() error {
-			_, err := stdx.Uint(-1)
+			_, err := stdkit.Uint(-1)
 			return err
 		}},
 		{"Uint8 from negative int", func() error {
-			_, err := stdx.Uint8(-1)
+			_, err := stdkit.Uint8(-1)
 			return err
 		}},
 		{"Uint8 overflow", func() error {
-			_, err := stdx.Uint8(256)
+			_, err := stdkit.Uint8(256)
 			return err
 		}},
 		{"Uint8 from uint overflow", func() error {
-			_, err := stdx.Uint8(uint16(256))
+			_, err := stdkit.Uint8(uint16(256))
 			return err
 		}},
 		{"Uint8 from float overflow", func() error {
-			_, err := stdx.Uint8(256.0)
+			_, err := stdkit.Uint8(256.0)
 			return err
 		}},
 		{"Uint64 from negative int", func() error {
-			_, err := stdx.Uint64(int64(-1))
+			_, err := stdkit.Uint64(int64(-1))
 			return err
 		}},
 		{"Uint64 from negative float", func() error {
-			_, err := stdx.Uint64(-1.0)
+			_, err := stdkit.Uint64(-1.0)
 			return err
 		}},
 		{"Uintptr from negative int", func() error {
-			_, err := stdx.Uintptr(-1)
+			_, err := stdkit.Uintptr(-1)
 			return err
 		}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.err(); !errors.Is(err, stdx.ErrOutOfRange) {
+			if err := tt.err(); !errors.Is(err, stdkit.ErrOutOfRange) {
 				t.Fatalf("期望获得 ErrOutOfRange, 实际获得 %v", err)
 			}
 		})
@@ -439,16 +439,16 @@ func TestIntegerConversionsRejectOutOfRange(t *testing.T) {
 }
 
 func TestIntegerConversionsAcceptRangeBoundaries(t *testing.T) {
-	if actual, err := stdx.Int8(math.MinInt8); err != nil || actual != math.MinInt8 {
+	if actual, err := stdkit.Int8(math.MinInt8); err != nil || actual != math.MinInt8 {
 		t.Fatalf("把 MinInt8 转换为 int8, 期望获得 %d nil, 实际获得 %d %v", math.MinInt8, actual, err)
 	}
-	if actual, err := stdx.Int8(math.MaxInt8); err != nil || actual != math.MaxInt8 {
+	if actual, err := stdkit.Int8(math.MaxInt8); err != nil || actual != math.MaxInt8 {
 		t.Fatalf("把 MaxInt8 转换为 int8, 期望获得 %d nil, 实际获得 %d %v", math.MaxInt8, actual, err)
 	}
-	if actual, err := stdx.Uint8(math.MaxUint8); err != nil || actual != math.MaxUint8 {
+	if actual, err := stdkit.Uint8(math.MaxUint8); err != nil || actual != math.MaxUint8 {
 		t.Fatalf("把 MaxUint8 转换为 uint8, 期望获得 %d nil, 实际获得 %d %v", math.MaxUint8, actual, err)
 	}
-	if actual, err := stdx.Uint64(uint64(math.MaxUint64)); err != nil || actual != math.MaxUint64 {
+	if actual, err := stdkit.Uint64(uint64(math.MaxUint64)); err != nil || actual != math.MaxUint64 {
 		t.Fatalf("把 MaxUint64 转换为 uint64, 期望获得 %d nil, 实际获得 %d %v", uint64(math.MaxUint64), actual, err)
 	}
 }
@@ -466,7 +466,7 @@ func TestSignedIntegerConversionsTruncateFloatBeforeRangeCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var actual, err = stdx.Int8(tt.v)
+			var actual, err = stdkit.Int8(tt.v)
 			if err != nil || actual != tt.r {
 				t.Fatalf("把 %v 转换为 int8, 期望获得 %d nil, 实际获得 %d %v", tt.v, tt.r, actual, err)
 			}
@@ -487,7 +487,7 @@ func TestUnsignedIntegerConversionsTruncateFloatBeforeRangeCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var actual, err = stdx.Uint8(tt.v)
+			var actual, err = stdkit.Uint8(tt.v)
 			if err != nil || actual != tt.r {
 				t.Fatalf("把 %v 转换为 uint8, 期望获得 %d nil, 实际获得 %d %v", tt.v, tt.r, actual, err)
 			}
@@ -496,10 +496,10 @@ func TestUnsignedIntegerConversionsTruncateFloatBeforeRangeCheck(t *testing.T) {
 }
 
 func TestEnsureIntegerConversionsUseDefaultOnOutOfRange(t *testing.T) {
-	if actual := stdx.EnsureUint(-1, 10); actual != 10 {
+	if actual := stdkit.EnsureUint(-1, 10); actual != 10 {
 		t.Fatalf("EnsureUint 溢出时应返回默认值 10, 实际获得 %d", actual)
 	}
-	if actual := stdx.EnsureInt8(128, 9); actual != 9 {
+	if actual := stdkit.EnsureInt8(128, 9); actual != 9 {
 		t.Fatalf("EnsureInt8 溢出时应返回默认值 9, 实际获得 %d", actual)
 	}
 }
@@ -509,18 +509,18 @@ func FuzzInt8AndUint8RejectOutOfRange(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, value int64) {
-		var actualInt8, errInt8 = stdx.Int8(value)
+		var actualInt8, errInt8 = stdkit.Int8(value)
 		if value < math.MinInt8 || value > math.MaxInt8 {
-			if !errors.Is(errInt8, stdx.ErrOutOfRange) {
+			if !errors.Is(errInt8, stdkit.ErrOutOfRange) {
 				t.Fatalf("Int8(%d) 期望获得 ErrOutOfRange, 实际获得 %v", value, errInt8)
 			}
 		} else if errInt8 != nil || actualInt8 != int8(value) {
 			t.Fatalf("Int8(%d) 期望获得 %d nil, 实际获得 %d %v", value, int8(value), actualInt8, errInt8)
 		}
 
-		var actualUint8, errUint8 = stdx.Uint8(value)
+		var actualUint8, errUint8 = stdkit.Uint8(value)
 		if value < 0 || value > math.MaxUint8 {
-			if !errors.Is(errUint8, stdx.ErrOutOfRange) {
+			if !errors.Is(errUint8, stdkit.ErrOutOfRange) {
 				t.Fatalf("Uint8(%d) 期望获得 ErrOutOfRange, 实际获得 %v", value, errUint8)
 			}
 		} else if errUint8 != nil || actualUint8 != uint8(value) {
@@ -534,9 +534,9 @@ func FuzzUint8TruncateFloatBeforeRangeCheck(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, value float64) {
-		var actual, err = stdx.Uint8(value)
+		var actual, err = stdkit.Uint8(value)
 		if math.IsNaN(value) || math.IsInf(value, 0) {
-			if !errors.Is(err, stdx.ErrOutOfRange) {
+			if !errors.Is(err, stdkit.ErrOutOfRange) {
 				t.Fatalf("Uint8(%f) 期望获得 ErrOutOfRange, 实际获得 %v", value, err)
 			}
 			return
@@ -544,7 +544,7 @@ func FuzzUint8TruncateFloatBeforeRangeCheck(f *testing.F) {
 
 		var truncated = math.Trunc(value)
 		if truncated < 0 || truncated > math.MaxUint8 {
-			if !errors.Is(err, stdx.ErrOutOfRange) {
+			if !errors.Is(err, stdkit.ErrOutOfRange) {
 				t.Fatalf("Uint8(%f) 期望获得 ErrOutOfRange, 实际获得 %v", value, err)
 			}
 			return
@@ -560,7 +560,7 @@ func FuzzIntegerConversionsRejectDecimalStrings(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, value string) {
-		_, err := stdx.Int(value)
+		_, err := stdkit.Int(value)
 		if _, parseErr := strconv.ParseInt(value, 10, 64); parseErr != nil {
 			if err == nil {
 				t.Fatalf("Int(%q) 期望获得错误, 实际获得 nil", value)
@@ -579,7 +579,7 @@ var benchmarkConvertResult int8
 func BenchmarkInt8(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		var actual, err = stdx.Int8(benchmarkConvertValue)
+		var actual, err = stdkit.Int8(benchmarkConvertValue)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -603,7 +603,7 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual, _ := stdx.String(tt.v); actual != tt.r {
+		if actual, _ := stdkit.String(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 string, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
@@ -612,7 +612,7 @@ func TestString(t *testing.T) {
 func TestStringTypedNilStringer(t *testing.T) {
 	var value *stringerValue
 
-	var actual, err = stdx.String(value)
+	var actual, err = stdkit.String(value)
 	if err != nil || actual != "" {
 		t.Fatalf("把 typed nil fmt.Stringer 转换为 string, 期望获得空字符串 nil, 实际获得 %q %v", actual, err)
 	}

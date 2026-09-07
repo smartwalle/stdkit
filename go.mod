@@ -1,3 +1,3 @@
-module github.com/smartwalle/stdx
+module github.com/smartwalle/stdkit
 
 go 1.21

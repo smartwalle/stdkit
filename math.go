@@ -1,4 +1,4 @@
-package stdx
+package stdkit
 
 import (
 	"math"

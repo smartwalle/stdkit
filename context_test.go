@@ -1,14 +1,15 @@
-package stdx_test
+package stdkit_test
 
 import (
 	"context"
-	"github.com/smartwalle/stdx"
 	"testing"
 	"time"
+
+	"github.com/smartwalle/stdkit"
 )
 
 func TestContext_Cancel(t *testing.T) {
-	var ctx = stdx.NewContext(context.Background())
+	var ctx = stdkit.NewContext(context.Background())
 	defer ctx.Cancel()
 
 	go func() {
@@ -23,7 +24,7 @@ func TestContext_Cancel(t *testing.T) {
 }
 
 func TestContext_Timeout(t *testing.T) {
-	var ctx = stdx.ContextWithTimeout(context.Background(), time.Second*5)
+	var ctx = stdkit.ContextWithTimeout(context.Background(), time.Second*5)
 	defer ctx.Cancel()
 	t.Log("waiting:", ctx.Cancelled())
 
@@ -44,7 +45,7 @@ func TestContext_Timeout(t *testing.T) {
 }
 
 func TestContext_Deadline(t *testing.T) {
-	var ctx = stdx.ContextWithDeadline(context.Background(), time.Now().Add(time.Second*5))
+	var ctx = stdkit.ContextWithDeadline(context.Background(), time.Now().Add(time.Second*5))
 	defer ctx.Cancel()
 	t.Log("waiting:", ctx.Cancelled())
 
